@@ -1,5 +1,8 @@
 REINFORCEMENT_LEARNING
 
+## Setup
+pip install -r requirements.txt
+
 How to execute the code:
 
 - main.py:
