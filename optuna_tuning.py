@@ -8,9 +8,9 @@ Para cada environment y cada algoritmo:
   3. Se imprime una tabla comparativa y se dibujan las curvas de aprendizaje.
 
 Uso:
-    python optuna_tuning.py                         # grid_stoch y cliff
+    python optuna_tuning.py                         # los 4 entornos (4 figuras, 8 gráficas)
     python optuna_tuning.py --trials 20 --final-seeds 5
-    python optuna_tuning.py --envs grid_det grid_stoch cliff
+    python optuna_tuning.py --envs grid_stoch cliff_det
 """
 import argparse
 
@@ -26,7 +26,8 @@ from utils import policy_value, value_iteration, moving_average
 ENVS = {
     "grid_det":   dict(make=lambda: GridworldEnv(is_slippery=False), episodes=1500, max_steps=100, window=100),
     "grid_stoch": dict(make=lambda: GridworldEnv(is_slippery=True),  episodes=1500, max_steps=100, window=100),
-    "cliff":      dict(make=lambda: CliffWalkingEnv(),               episodes=500,  max_steps=200, window=20),
+    "cliff_det":   dict(make=lambda: CliffWalkingEnv(),                episodes=500,  max_steps=200, window=20),
+    "cliff_stoch": dict(make=lambda: CliffWalkingEnv(slip_prob=0.2),   episodes=500,  max_steps=200, window=20),
 }
 ALGOS = {"SARSA": train_sarsa, "Q-learning": train_q_learning}
 
@@ -77,7 +78,7 @@ def fmt(x):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--envs", nargs="+", choices=ENVS, default=["grid_stoch", "cliff"])
+    parser.add_argument("--envs", nargs="+", choices=ENVS, default=["grid_det", "grid_stoch", "cliff_det", "cliff_stoch"])
     parser.add_argument("--trials", type=int, default=30)
     parser.add_argument("--final-seeds", type=int, default=10)
     args = parser.parse_args()
